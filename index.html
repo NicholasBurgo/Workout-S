@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Superman Log</title>
+  <meta name="description" content="Offline workout, calorie and protein tracker.">
+  <meta name="theme-color" content="#12182b">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Superman Log">
+
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <img src="./icons/icon-192.png" alt="" width="28" height="28">
+      <h1 id="page-title">Superman Log</h1>
+    </div>
+  </header>
+
+  <main id="view" class="view"></main>
+
+  <nav class="tabbar" aria-label="Main">
+    <a href="#/workout" data-tab="workout"><span class="tab-icon">🏋️</span><span>Workout</span></a>
+    <a href="#/food" data-tab="food"><span class="tab-icon">🍗</span><span>Food</span></a>
+    <a href="#/history" data-tab="history"><span class="tab-icon">📅</span><span>History</span></a>
+    <a href="#/progress" data-tab="progress"><span class="tab-icon">📈</span><span>Progress</span></a>
+    <a href="#/settings" data-tab="settings"><span class="tab-icon">⚙️</span><span>Settings</span></a>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./vendor/dexie.min.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

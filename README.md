@@ -67,12 +67,18 @@ experience. Everything else works fine over LAN for trying it out.
 
 ## Hosting on GitHub Pages (recommended)
 
-1. Push this repo to GitHub.
-2. In the repo go to **Settings**, then **Pages**.
-3. Under **Build and deployment**, set *Source* to **Deploy from a branch**,
-   pick your branch (e.g. `main`) and the **/ (root)** folder, then Save.
-4. After a minute the site is live at
+The repo ships with a workflow (`.github/workflows/pages.yml`) that publishes
+the site on every push to `main`. It enables Pages automatically on its first
+run.
+
+1. Push to `main` (or merge a pull request into it).
+2. Watch the "Deploy to GitHub Pages" run under the **Actions** tab.
+3. When it finishes, the site is live at
    `https://<your-username>.github.io/<repo-name>/`.
+
+If the first run fails on the "configure-pages" step, enable it once by hand:
+open **Settings**, then **Pages**, set *Source* to **GitHub Actions**, and
+re-run the workflow.
 
 All paths in the app are relative, so it works from a sub-path like
 `/Workout-S/` without any configuration.

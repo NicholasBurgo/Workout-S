@@ -10,6 +10,13 @@ function svg(tag, attrs = {}) {
   return el;
 }
 
+function niceStep(raw) {
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const n = raw / mag;
+  const base = n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10;
+  return base * mag;
+}
+
 export function lineChart(points, { unit = '', height = 190 } = {}) {
   const W = 360;
   const H = height;
@@ -18,13 +25,14 @@ export function lineChart(points, { unit = '', height = 190 } = {}) {
 
   if (!points.length) return root;
 
+  // Round the axis to "nice" tick steps (1, 2, 2.5, 5, 10 ...) so labels never repeat.
   const values = points.map((p) => p.value);
-  let min = Math.min(...values);
-  let max = Math.max(...values);
-  if (min === max) { min -= 1; max += 1; }
-  const span = max - min;
-  min -= span * 0.1;
-  max += span * 0.1;
+  let lo = Math.min(...values);
+  let hi = Math.max(...values);
+  if (lo === hi) { lo -= 2.5; hi += 2.5; }
+  const step = niceStep((hi - lo) / 4);
+  const min = Math.floor(lo / step) * step;
+  const max = Math.ceil(hi / step) * step;
 
   const innerW = W - pad.left - pad.right;
   const innerH = H - pad.top - pad.bottom;
@@ -32,13 +40,11 @@ export function lineChart(points, { unit = '', height = 190 } = {}) {
   const y = (v) => pad.top + innerH - ((v - min) / (max - min)) * innerH;
 
   // Horizontal grid lines + y labels
-  const ticks = 4;
-  for (let t = 0; t <= ticks; t++) {
-    const v = min + ((max - min) * t) / ticks;
+  for (let v = min; v <= max + step / 1000; v += step) {
     const yy = y(v);
     root.appendChild(svg('line', { class: 'grid', x1: pad.left, x2: W - pad.right, y1: yy, y2: yy }));
     const label = svg('text', { class: 'label', x: pad.left - 6, y: yy + 4, 'text-anchor': 'end' });
-    label.textContent = fmtNum(v, 0);
+    label.textContent = fmtNum(Number(v.toFixed(6)));
     root.appendChild(label);
   }
 

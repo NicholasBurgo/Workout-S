@@ -8,18 +8,18 @@ Comes preloaded with the RP Strength "Superman" 5-day split.
 
 ## Features
 
-- **Workout log** – logs sets per exercise, shows last session's weight/reps as
+- **Workout log**: logs sets per exercise, shows last session's weight/reps as
   placeholders, highlights green when you beat them, add-set button per
   exercise, auto-advances to the next day after saving.
-- **Editable program** – rename days, change sets/rep targets, add, reorder,
+- **Editable program**: rename days, change sets/rep targets, add, reorder,
   swap or remove exercises. Reset to the default split any time.
-- **History** – all past sessions, tap to expand, delete.
-- **Progress** – per-exercise chart of best set weight over time, plus a
+- **History**: all past sessions, tap to expand, delete.
+- **Progress**: per-exercise chart of best set weight over time, plus a
   bodyweight log with a trend chart.
-- **Food** – daily calorie and protein targets with progress bars, quick add,
+- **Food**: daily calorie and protein targets with progress bars, quick add,
   one-tap recent foods, a saved-food library, day-by-day history and weekly
   summaries (avg calories, avg protein, days hitting protein target).
-- **Backup** – export everything as JSON and import it on another phone.
+- **Backup**: export everything as JSON and import it on another phone.
 - Dark mode, numeric keyboards, big thumb-friendly inputs, installable to
   the home screen, works with no signal.
 
@@ -35,6 +35,7 @@ js/db.js            Dexie schema, settings, export/import
 js/program.js       default Superman split
 js/ui.js            tiny DOM helper, toast, date utils
 js/chart.js         dependency-free SVG line chart
+js/icons.js         inline SVG icon set
 js/views/*.js       one module per screen
 vendor/dexie.min.js Dexie (vendored so it works offline)
 icons/              app icons (regenerate with tools/make-icons.py)
@@ -67,7 +68,7 @@ experience. Everything else works fine over LAN for trying it out.
 ## Hosting on GitHub Pages (recommended)
 
 1. Push this repo to GitHub.
-2. In the repo go to **Settings → Pages**.
+2. In the repo go to **Settings**, then **Pages**.
 3. Under **Build and deployment**, set *Source* to **Deploy from a branch**,
    pick your branch (e.g. `main`) and the **/ (root)** folder, then Save.
 4. After a minute the site is live at
@@ -108,8 +109,8 @@ their menus.
 
 ## Moving to a new phone
 
-1. Old phone: **Settings → Export JSON**, save or share the file.
-2. New phone: install the app, then **Settings → Import JSON** and pick the
+1. Old phone: **Settings**, then **Export JSON**, save or share the file.
+2. New phone: install the app, then **Settings**, then **Import JSON** and pick the
    file. This replaces everything on the new device with the backup.
 
 ## Data model (for the curious)

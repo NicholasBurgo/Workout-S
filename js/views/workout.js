@@ -1,6 +1,7 @@
 // Workout logging view: today's day of the split, sets with last-session placeholders.
 import { db, getProgram, getSetting, setSetting } from '../db.js';
-import { h, clear, toast, setTitle, numVal, fmtNum, fmtShort, todayKey } from '../ui.js';
+import { h, clear, toast, setTitle, fmtNum, fmtShort, todayKey } from '../ui.js';
+import { icon } from '../icons.js';
 
 const draftKey = (dayIndex) => `draft:${dayIndex}`;
 const norm = (name) => name.trim().toLowerCase();
@@ -60,11 +61,11 @@ export async function render(root) {
 
   root.append(
     h('div', { class: 'day-nav' },
-      h('button', { class: 'btn icon', onclick: () => goToDay(dayIndex - 1), 'aria-label': 'Previous day' }, '‹'),
+      h('button', { class: 'btn icon', onclick: () => goToDay(dayIndex - 1), 'aria-label': 'Previous day' }, icon('chevron-left')),
       h('div', { class: 'title' },
         h('strong', {}, `Day ${dayIndex + 1} of ${days.length}`),
         h('span', { class: 'muted' }, day.name)),
-      h('button', { class: 'btn icon', onclick: () => goToDay(dayIndex + 1), 'aria-label': 'Next day' }, '›'),
+      h('button', { class: 'btn icon', onclick: () => goToDay(dayIndex + 1), 'aria-label': 'Next day' }, icon('chevron-right')),
     ),
   );
 
@@ -72,9 +73,9 @@ export async function render(root) {
   root.append(...exerciseCards);
 
   root.append(
-    h('p', { class: 'muted small' }, 'Tip: leave weight blank to reuse last time\'s weight. Sets without reps are ignored.'),
     h('button', { class: 'btn primary block', onclick: save }, 'Save session'),
-    h('p', { style: 'text-align:center;margin-top:12px' }, h('a', { href: '#/program' }, 'Edit program')),
+    h('p', { class: 'footnote' }, 'Leave weight blank to reuse last time\'s weight. Sets without reps are ignored.'),
+    h('p', { class: 'center mt' }, h('a', { href: '#/program' }, 'Edit program')),
   );
 
   async function save() {
@@ -90,7 +91,7 @@ export async function render(root) {
       });
       if (sets.length) exercises.push({ name: ex.name, target: ex.target, sets });
     });
-    if (!exercises.length) { toast('Nothing to save yet — enter some reps'); return; }
+    if (!exercises.length) { toast('Nothing to save yet. Enter some reps first.'); return; }
 
     await db.sessions.add({
       date: todayKey(),
@@ -129,18 +130,18 @@ function beats(weight, reps, ref) {
 
 function exerciseCard(ex, ref, unit, onChange) {
   const grid = h('div', { class: 'set-grid' });
-  const lastText = ref
-    ? `Last (${fmtShort(ref.date)}): ${ref.sets.map((s) => `${fmtNum(s.weight)}×${s.reps}`).join(', ')}`
-    : 'No previous session';
+  const lastLine = ref
+    ? h('div', { class: 'last-line' }, `Last time (${fmtShort(ref.date)}): `, h('b', {}, ref.sets.map((s) => `${fmtNum(s.weight)}×${s.reps}`).join(', ')))
+    : h('div', { class: 'last-line' }, 'No previous session');
 
   const card = h('div', { class: 'card' },
     h('div', { class: 'card-head' }, h('h3', {}, ex.name), h('span', { class: 'target' }, ex.target)),
-    h('div', { class: 'muted small', style: 'margin-bottom:8px' }, lastText),
+    lastLine,
     grid,
     h('button', {
       class: 'btn sm block', style: 'margin-top:10px',
       onclick: () => { ex.sets.push({ weight: '', reps: '' }); onChange(); draw(); },
-    }, '+ Add set'),
+    }, icon('plus', 18), 'Add set'),
   );
 
   function draw() {
@@ -155,11 +156,11 @@ function exerciseCard(ex, ref, unit, onChange) {
       const r = refSet(ref, i);
       const w = h('input', {
         type: 'text', inputmode: 'decimal', value: set.weight,
-        placeholder: r ? fmtNum(r.weight) : '—', 'aria-label': `Set ${i + 1} weight`,
+        placeholder: r ? fmtNum(r.weight) : '', 'aria-label': `Set ${i + 1} weight`,
       });
       const reps = h('input', {
         type: 'text', inputmode: 'numeric', value: set.reps,
-        placeholder: r ? String(r.reps) : '—', 'aria-label': `Set ${i + 1} reps`,
+        placeholder: r ? String(r.reps) : '', 'aria-label': `Set ${i + 1} reps`,
       });
       const update = () => {
         set.weight = w.value; set.reps = reps.value; onChange();
@@ -175,7 +176,7 @@ function exerciseCard(ex, ref, unit, onChange) {
       const remove = h('button', {
         class: 'btn icon ghost', 'aria-label': 'Remove set',
         onclick: () => { ex.sets.splice(i, 1); onChange(); draw(); },
-      }, '×');
+      }, icon('x', 18));
       grid.append(h('div', { class: 'set-no' }, String(i + 1)), w, reps, remove);
       update();
     });

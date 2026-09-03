@@ -18,7 +18,7 @@ export async function render(root) {
 
   root.append(
     h('form', { class: 'card', onsubmit: (e) => { e.preventDefault(); saveTargets(); } },
-      h('h3', { style: 'margin-bottom:8px' }, 'Daily targets'),
+      h('span', { class: 'eyebrow' }, 'Daily targets'),
       h('div', { class: 'row' },
         h('label', { class: 'field', style: 'flex:1' }, h('span', {}, 'Calories (kcal)'), calIn),
         h('label', { class: 'field', style: 'flex:1' }, h('span', {}, 'Protein (g)'), proIn),
@@ -27,7 +27,7 @@ export async function render(root) {
     ),
 
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:8px' }, 'Appearance'),
+      h('span', { class: 'eyebrow' }, 'Appearance'),
       h('label', { class: 'field' }, h('span', {}, 'Theme'),
         h('select', { onchange: async (e) => { await setSetting('theme', e.target.value); applyTheme(e.target.value); } },
           [['system', 'Match system'], ['light', 'Light'], ['dark', 'Dark']].map(([v, l]) =>
@@ -39,7 +39,7 @@ export async function render(root) {
     ),
 
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:8px' }, 'Backup'),
+      h('span', { class: 'eyebrow' }, 'Backup'),
       h('p', { class: 'muted small' }, 'All data stays on this device. Export a JSON file to back up or move to a new phone, then import it there.'),
       h('div', { class: 'row', style: 'margin-top:8px' },
         h('button', { class: 'btn', style: 'flex:1', onclick: doExport }, 'Export JSON'),
@@ -48,7 +48,7 @@ export async function render(root) {
     ),
 
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:8px' }, 'Program'),
+      h('span', { class: 'eyebrow' }, 'Program'),
       h('div', { class: 'row' },
         h('a', { class: 'btn', style: 'flex:1', href: '#/program' }, 'Edit program'),
         h('button', { class: 'btn', style: 'flex:1', onclick: async () => {
@@ -59,7 +59,7 @@ export async function render(root) {
     ),
 
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:8px' }, 'Danger zone'),
+      h('span', { class: 'eyebrow' }, 'Danger zone'),
       h('button', { class: 'btn danger block', onclick: async () => {
         if (!confirm('Delete ALL workouts, food logs, bodyweight and settings from this device? Export first if you want a backup.')) return;
         if (!confirm('Really delete everything? This cannot be undone.')) return;
@@ -68,7 +68,7 @@ export async function render(root) {
       } }, 'Delete all data'),
     ),
 
-    h('p', { class: 'muted small', style: 'text-align:center' }, 'Superman Log · offline · no accounts · no tracking'),
+    h('p', { class: 'footnote' }, 'Superman Log. Offline, no accounts, no tracking.'),
   );
 }
 

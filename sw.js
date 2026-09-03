@@ -1,6 +1,6 @@
 // Superman Log service worker: precache the app shell, serve cache-first.
 // Bump CACHE_VERSION whenever you ship a change so clients pick it up.
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `superman-log-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -14,6 +14,7 @@ const ASSETS = [
   './js/program.js',
   './js/ui.js',
   './js/chart.js',
+  './js/icons.js',
   './js/views/workout.js',
   './js/views/program-editor.js',
   './js/views/history.js',

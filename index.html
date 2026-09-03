@@ -22,7 +22,14 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <img src="./icons/icon-192.png" alt="" width="28" height="28">
+      <svg class="brand-mark" viewBox="0 0 100 100" width="26" height="26" aria-hidden="true">
+        <path d="M50 6 L86 20 L86 50 L50 94 L14 50 L14 20 Z" fill="#d82c2c"/>
+        <rect x="28" y="46" width="44" height="8" rx="2" fill="#facc15"/>
+        <rect x="24" y="36" width="7" height="28" rx="2" fill="#facc15"/>
+        <rect x="32" y="30" width="8" height="40" rx="2" fill="#facc15"/>
+        <rect x="60" y="30" width="8" height="40" rx="2" fill="#facc15"/>
+        <rect x="69" y="36" width="7" height="28" rx="2" fill="#facc15"/>
+      </svg>
       <h1 id="page-title">Superman Log</h1>
     </div>
   </header>
@@ -30,11 +37,26 @@
   <main id="view" class="view"></main>
 
   <nav class="tabbar" aria-label="Main">
-    <a href="#/workout" data-tab="workout"><span class="tab-icon">🏋️</span><span>Workout</span></a>
-    <a href="#/food" data-tab="food"><span class="tab-icon">🍗</span><span>Food</span></a>
-    <a href="#/history" data-tab="history"><span class="tab-icon">📅</span><span>History</span></a>
-    <a href="#/progress" data-tab="progress"><span class="tab-icon">📈</span><span>Progress</span></a>
-    <a href="#/settings" data-tab="settings"><span class="tab-icon">⚙️</span><span>Settings</span></a>
+    <a href="#/workout" data-tab="workout">
+      <svg viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M3 8v8M21 8v8M6 12h12"/></svg>
+      <span>Workout</span>
+    </a>
+    <a href="#/food" data-tab="food">
+      <svg viewBox="0 0 24 24"><path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M18 3c-2 1-4 4-4 8a2 2 0 0 0 2 2h2v8M18 3v18"/></svg>
+      <span>Food</span>
+    </a>
+    <a href="#/history" data-tab="history">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>
+      <span>History</span>
+    </a>
+    <a href="#/progress" data-tab="progress">
+      <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>
+      <span>Progress</span>
+    </a>
+    <a href="#/settings" data-tab="settings">
+      <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>
+      <span>Settings</span>
+    </a>
   </nav>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>

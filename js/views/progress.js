@@ -2,6 +2,7 @@
 import { db, getSetting } from '../db.js';
 import { h, clear, toast, confirm, setTitle, numVal, fmtNum, fmtShort, fmtDate, todayKey } from '../ui.js';
 import { lineChart } from '../chart.js';
+import { icon } from '../icons.js';
 
 const state = { exercise: null };
 const norm = (s) => s.trim().toLowerCase();
@@ -23,7 +24,7 @@ export async function render(root) {
 
   root.append(
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:8px' }, 'Exercise progress'),
+      h('span', { class: 'eyebrow' }, 'Exercise progress'),
       keys.length
         ? [h('label', { class: 'field' }, h('span', {}, 'Exercise'), select), chartBox]
         : h('p', { class: 'muted' }, 'Log a workout to see progress here.'),
@@ -66,7 +67,7 @@ export async function render(root) {
       toast('Bodyweight saved');
       clear(root); render(root);
     } },
-      h('h3', { style: 'margin-bottom:8px' }, 'Bodyweight'),
+      h('span', { class: 'eyebrow' }, 'Bodyweight'),
       h('div', { class: 'row' },
         h('label', { class: 'field', style: 'flex:1' }, h('span', {}, 'Date'), dateIn),
         h('label', { class: 'field', style: 'flex:1' }, h('span', {}, `Weight (${unit})`), weightIn),
@@ -81,7 +82,7 @@ export async function render(root) {
     const delta = lastW - first;
     root.append(
       h('div', { class: 'card' },
-        h('div', { class: 'card-head' }, h('h3', {}, 'Trend'),
+        h('div', { class: 'card-head' }, h('span', { class: 'eyebrow', style: 'margin:0' }, 'Trend'), h('span', { style: 'flex:1' }),
           h('span', { class: 'muted small' }, `${delta >= 0 ? '+' : ''}${fmtNum(delta)} ${unit} since ${fmtShort(entries[0].date)}`)),
         lineChart(entries.map((e) => ({ label: fmtShort(e.date), value: e.weight })), { unit: ` ${unit}` }),
         h('ul', { class: 'list' }, entries.slice(-7).reverse().map((e) => h('li', {},
@@ -91,7 +92,7 @@ export async function render(root) {
             if (!confirm(`Delete bodyweight for ${fmtDate(e.date)}?`)) return;
             await db.bodyweight.delete(e.date);
             clear(root); render(root);
-          } }, '×'),
+          } }, icon('x', 18)),
         ))),
       ),
     );

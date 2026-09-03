@@ -1,6 +1,7 @@
 // Edit the split: day names, exercises, set counts and rep targets.
 import { getProgram, saveProgram, resetProgram } from '../db.js';
 import { h, clear, toast, confirm, setTitle } from '../ui.js';
+import { icon } from '../icons.js';
 
 export async function render(root) {
   setTitle('Edit program');
@@ -10,7 +11,7 @@ export async function render(root) {
   root.append(
     h('p', { class: 'muted' }, 'Rename anything, change sets or rep targets, reorder, or swap exercises. Changes apply after you tap Save.'),
     list,
-    h('button', { class: 'btn sm block', style: 'margin-bottom:12px', onclick: () => { days.push({ name: 'New day', exercises: [] }); draw(); } }, '+ Add day'),
+    h('button', { class: 'btn sm block', style: 'margin-bottom:12px', onclick: () => { days.push({ name: 'New day', exercises: [] }); draw(); } }, icon('plus', 18), 'Add day'),
     h('button', { class: 'btn primary block', onclick: save }, 'Save program'),
     h('div', { class: 'row', style: 'margin-top:12px; justify-content:space-between' },
       h('a', { class: 'btn ghost', href: '#/workout' }, 'Cancel'),
@@ -31,10 +32,10 @@ export async function render(root) {
         h('input', { type: 'text', value: day.name, placeholder: 'Day name', oninput: (e) => { day.name = e.target.value; } }),
         h('button', { class: 'btn icon ghost danger', 'aria-label': 'Delete day', onclick: () => {
           if (confirm(`Delete Day ${di + 1} (${day.name})?`)) { days.splice(di, 1); draw(); }
-        } }, '🗑'),
+        } }, icon('trash', 20)),
       ),
       exList,
-      h('button', { class: 'btn sm block', onclick: () => { day.exercises.push({ name: '', sets: 2, reps: '10-15' }); drawEx(); } }, '+ Add exercise'),
+      h('button', { class: 'btn sm block', onclick: () => { day.exercises.push({ name: '', sets: 2, reps: '10-15' }); drawEx(); } }, icon('plus', 18), 'Add exercise'),
     );
 
     function drawEx() {
@@ -50,9 +51,9 @@ export async function render(root) {
           h('div', { class: 'ex-row' },
             h('div', { class: 'row' },
               h('input', { type: 'text', value: ex.name, placeholder: 'Exercise name', oninput: (e) => { ex.name = e.target.value; } }),
-              h('button', { class: 'btn icon ghost', 'aria-label': 'Move up', onclick: () => move(-1) }, '↑'),
-              h('button', { class: 'btn icon ghost', 'aria-label': 'Move down', onclick: () => move(1) }, '↓'),
-              h('button', { class: 'btn icon ghost danger', 'aria-label': 'Remove exercise', onclick: () => { day.exercises.splice(ei, 1); drawEx(); } }, '×'),
+              h('button', { class: 'btn icon ghost', 'aria-label': 'Move up', onclick: () => move(-1) }, icon('arrow-up', 18)),
+              h('button', { class: 'btn icon ghost', 'aria-label': 'Move down', onclick: () => move(1) }, icon('arrow-down', 18)),
+              h('button', { class: 'btn icon ghost danger', 'aria-label': 'Remove exercise', onclick: () => { day.exercises.splice(ei, 1); drawEx(); } }, icon('x', 18)),
             ),
             h('div', { class: 'grid' },
               h('label', { class: 'field' }, h('span', {}, 'Sets'),

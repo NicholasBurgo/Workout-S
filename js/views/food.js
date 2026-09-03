@@ -4,6 +4,7 @@ import {
   h, clear, toast, confirm, setTitle, segments, numVal, fmtNum,
   todayKey, addDays, fmtDate, fmtShort, weekStart,
 } from '../ui.js';
+import { icon } from '../icons.js';
 
 const state = { tab: 'today', date: todayKey() };
 const norm = (s) => s.trim().toLowerCase();
@@ -35,13 +36,14 @@ function totals(entries) {
 function progressBar(label, value, target, unit) {
   const pct = target > 0 ? Math.min(100, (value / target) * 100) : 0;
   const cls = value >= target && target > 0 ? 'good' : '';
-  return h('div', { style: 'margin-bottom:12px' },
+  const hit = target > 0 && value >= target;
+  return h('div', { style: 'margin-bottom:14px' },
     h('div', { class: 'stat' },
-      h('span', {}, label),
-      h('span', {}, h('strong', {}, fmtNum(value, 0)), h('span', { class: 'muted' }, ` / ${fmtNum(target, 0)} ${unit}`)),
+      h('span', { class: 'label' }, label),
+      h('span', {}, h('strong', {}, fmtNum(value, 0)), h('span', { class: 'of' }, ` / ${fmtNum(target, 0)} ${unit}`)),
     ),
     h('div', { class: 'bar' }, h('div', { class: cls, style: `width:${pct}%` })),
-    h('div', { class: 'muted small' }, value >= target ? `Target hit (+${fmtNum(value - target, 0)})` : `${fmtNum(target - value, 0)} ${unit} to go`),
+    h('div', { class: hit ? 'bar-note good' : 'bar-note' }, hit ? `Target hit, ${fmtNum(value - target, 0)} ${unit} over` : `${fmtNum(target - value, 0)} ${unit} to go`),
   );
 }
 
@@ -68,10 +70,10 @@ async function renderDay(root, settings, redraw) {
   // Date navigation
   root.append(
     h('div', { class: 'day-nav' },
-      h('button', { class: 'btn icon', onclick: () => { state.date = addDays(date, -1); redraw(); } }, '‹'),
+      h('button', { class: 'btn icon', 'aria-label': 'Previous day', onclick: () => { state.date = addDays(date, -1); redraw(); } }, icon('chevron-left')),
       h('div', { class: 'title' }, h('strong', {}, fmtDate(date)),
         date !== todayKey() ? h('a', { href: '#', class: 'small', onclick: (e) => { e.preventDefault(); state.date = todayKey(); redraw(); } }, 'Back to today') : null),
-      h('button', { class: 'btn icon', disabled: date >= todayKey(), onclick: () => { state.date = addDays(date, 1); redraw(); } }, '›'),
+      h('button', { class: 'btn icon', 'aria-label': 'Next day', disabled: date >= todayKey(), onclick: () => { state.date = addDays(date, 1); redraw(); } }, icon('chevron-right')),
     ),
     h('div', { class: 'card' },
       progressBar('Calories', t.calories, settings.calorieTarget, 'kcal'),
@@ -95,7 +97,7 @@ async function renderDay(root, settings, redraw) {
   };
   root.append(
     h('form', { class: 'card', onsubmit: submit },
-      h('h3', { style: 'margin-bottom:8px' }, 'Quick add'),
+      h('span', { class: 'eyebrow' }, 'Quick add'),
       h('label', { class: 'field' }, h('span', {}, 'Food'), nameIn),
       h('div', { class: 'row' },
         h('label', { class: 'field', style: 'flex:1' }, h('span', {}, 'Calories'), calIn),
@@ -109,13 +111,13 @@ async function renderDay(root, settings, redraw) {
   if (recent.length) {
     root.append(
       h('div', { class: 'card' },
-        h('h3', { style: 'margin-bottom:8px' }, 'Recent foods'),
+        h('span', { class: 'eyebrow' }, 'Recent foods'),
         h('div', { class: 'chips' },
           recent.map((f) => h('button', { class: 'chip', type: 'button', onclick: async () => {
             await addEntry(date, f.name, f.calories, f.protein);
             toast(`Added ${f.name}`);
             redraw();
-          } }, f.name, ' ', h('span', { class: 'muted' }, `${fmtNum(f.calories, 0)} kcal · ${fmtNum(f.protein)}g`))),
+          } }, f.name, h('span', { class: 'sub' }, `${fmtNum(f.calories, 0)} kcal · ${fmtNum(f.protein)} g protein`))),
         ),
       ),
     );
@@ -124,7 +126,7 @@ async function renderDay(root, settings, redraw) {
   // Entries for the day
   root.append(
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:4px' }, `Entries (${entries.length})`),
+      h('span', { class: 'eyebrow' }, `Entries (${entries.length})`),
       entries.length
         ? h('ul', { class: 'list' }, entries.map((e) => h('li', {},
           h('div', { class: 'grow' }, h('div', { class: 'title' }, e.name),
@@ -132,7 +134,7 @@ async function renderDay(root, settings, redraw) {
           h('button', { class: 'btn icon ghost danger', 'aria-label': 'Delete entry', onclick: async () => {
             await db.foodEntries.delete(e.id);
             redraw();
-          } }, '×'),
+          } }, icon('x', 18)),
         )))
         : h('p', { class: 'muted' }, 'Nothing logged yet.'),
     ),
@@ -161,13 +163,13 @@ async function renderHistory(root, settings) {
       ))),
     );
     root.append(
-      h('div', { class: 'card session', onclick: () => body.classList.toggle('hidden') },
+      h('div', { class: 'card session', onclick: (ev) => { body.classList.toggle('hidden'); ev.currentTarget.classList.toggle('open'); } },
         h('div', { class: 'row' },
           h('div', { class: 'grow' },
-            h('div', { class: 'title' }, fmtDate(date)),
-            h('div', { class: 'sub' }, `${fmtNum(t.calories, 0)} kcal · ${fmtNum(t.protein)} g protein ${hit ? '✅' : ''}`),
+            h('div', { class: 'title' }, fmtDate(date), hit ? h('span', { class: 'badge' }, 'Protein hit') : null),
+            h('div', { class: 'sub' }, `${fmtNum(t.calories, 0)} kcal · ${fmtNum(t.protein)} g protein`),
           ),
-          h('span', { class: 'muted' }, '▾'),
+          h('span', { class: 'chev' }, icon('chevron-down', 20)),
         ),
         body,
       ),
@@ -209,9 +211,9 @@ async function renderWeekly(root, settings) {
   // Rolling last 7 days
   const today = todayKey();
   const last7 = Array.from({ length: 7 }, (_, i) => addDays(today, -i));
-  root.append(card('Last 7 days', `${fmtShort(last7[6])} – ${fmtShort(today)}`, summarize(last7)));
+  root.append(card('Last 7 days', `${fmtShort(last7[6])} to ${fmtShort(today)}`, summarize(last7)));
 
-  // Calendar weeks (Mon–Sun), newest first, only weeks with data
+  // Calendar weeks (Monday to Sunday), newest first, only weeks with data
   const weeks = new Map();
   for (const d of dayTotals.keys()) {
     const ws = weekStart(d);
@@ -220,7 +222,7 @@ async function renderWeekly(root, settings) {
   const ordered = [...weeks.keys()].sort().reverse();
   root.append(h('h2', { style: 'margin:16px 0 8px' }, 'By week'));
   ordered.forEach((ws) => {
-    root.append(card(`Week of ${fmtShort(ws)}`, `${fmtShort(ws)} – ${fmtShort(addDays(ws, 6))}`, summarize(weeks.get(ws))));
+    root.append(card(`Week of ${fmtShort(ws)}`, `${fmtShort(ws)} to ${fmtShort(addDays(ws, 6))}`, summarize(weeks.get(ws))));
   });
 }
 
@@ -246,7 +248,7 @@ async function renderFoods(root, redraw) {
       toast('Food saved');
       redraw();
     } },
-      h('h3', { style: 'margin-bottom:8px' }, 'Save a custom food'),
+      h('span', { class: 'eyebrow' }, 'Save a custom food'),
       h('label', { class: 'field' }, h('span', {}, 'Food'), nameIn),
       h('div', { class: 'row' },
         h('label', { class: 'field', style: 'flex:1' }, h('span', {}, 'Calories'), calIn),
@@ -255,7 +257,7 @@ async function renderFoods(root, redraw) {
       h('button', { class: 'btn primary block', type: 'submit' }, 'Save food'),
     ),
     h('div', { class: 'card' },
-      h('h3', { style: 'margin-bottom:4px' }, `Saved foods (${foods.length})`),
+      h('span', { class: 'eyebrow' }, `Saved foods (${foods.length})`),
       h('p', { class: 'muted small' }, 'Anything you log is saved here automatically. The 12 most recent show as one-tap buttons on Today.'),
       foods.length
         ? h('ul', { class: 'list' }, foods.map((f) => h('li', {},
@@ -265,7 +267,7 @@ async function renderFoods(root, redraw) {
             if (!confirm(`Remove "${f.name}" from saved foods?`)) return;
             await db.foods.delete(f.id);
             redraw();
-          } }, '×'),
+          } }, icon('x', 18)),
         )))
         : h('p', { class: 'muted' }, 'No saved foods yet.'),
     ),

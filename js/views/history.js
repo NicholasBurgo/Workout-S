@@ -1,6 +1,7 @@
 // Past workout sessions: tap to expand, delete.
 import { db } from '../db.js';
 import { h, clear, toast, confirm, setTitle, fmtDate, fmtNum } from '../ui.js';
+import { icon } from '../icons.js';
 
 export async function render(root) {
   setTitle('History');
@@ -34,13 +35,13 @@ function sessionCard(s, root) {
     } }, 'Delete session'),
   );
 
-  const card = h('div', { class: 'card session', onclick: () => body.classList.toggle('hidden') },
+  const card = h('div', { class: 'card session', onclick: () => { body.classList.toggle('hidden'); card.classList.toggle('open'); } },
     h('div', { class: 'row' },
       h('div', { class: 'grow' },
         h('div', { class: 'title' }, `${fmtDate(s.date)} · Day ${s.dayIndex + 1}`),
         h('div', { class: 'sub' }, `${s.dayName} · ${s.exercises.length} exercises · ${setCount} sets`),
       ),
-      h('span', { class: 'muted' }, '▾'),
+      h('span', { class: 'chev' }, icon('chevron-down', 20)),
     ),
     body,
   );

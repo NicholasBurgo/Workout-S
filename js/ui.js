@@ -82,7 +82,7 @@ export function numVal(input) {
 }
 
 export function fmtNum(n, digits = 1) {
-  if (n == null || !Number.isFinite(n)) return '–';
+  if (n == null || !Number.isFinite(n)) return '-';
   return Number.isInteger(n) ? String(n) : n.toFixed(digits).replace(/\.0$/, '');
 }
 
